@@ -116,18 +116,12 @@ export default class GameScene extends Phaser.Scene {
             const t = beat.t;
             const pos = this.wavePath.getPoint(t);
             
-            let marker;
-            if (t === 1.0) {
-                marker = this.add.circle(pos.x, pos.y, 22, 0xffd700, 1); 
-                marker.setStrokeStyle(4, 0xffffff, 1);
-            } else {
-                marker = this.add.circle(pos.x, pos.y, 14, 0xff00ff, 1); 
-                marker.setStrokeStyle(3, 0xffffff, 1);
-            }
+            const marker = this.add.circle(pos.x, pos.y, 18, 0xe0e0e0, 1);
+            marker.setStrokeStyle(15, 0x00ffff, 0.3);
 
-            marker.setDepth(2); 
+            marker.setDepth(2);
 
-            marker.setData('t', t); 
+            marker.setData('t', t);
             marker.setData('hit', false);
             marker.setData('type', beat.endT ? 'hold' : 'tap');
 
@@ -180,7 +174,7 @@ export default class GameScene extends Phaser.Scene {
         graphics.fillStyle(0x00ffff, 0.3);
         graphics.fillCircle(0, 0, 18); 
         graphics.fillStyle(0xffffff, 1);
-        graphics.fillCircle(0, 0, 8); 
+        graphics.fillCircle(0, 0, 8);
     }
 
     handlePress() {
@@ -222,20 +216,22 @@ export default class GameScene extends Phaser.Scene {
             if (minDiff <= perfectTolerance) {
                 feedbackText = 'PERFECT!';
                 feedbackColor = '#00ff00';
-                closestMarker.setFillStyle(0x00ff00, 1); 
             } else {
                 if (closestSignedDiff < 0) {
                     feedbackText = 'EARLY';
                     feedbackColor = '#ffff00';
-                    closestMarker.setFillStyle(0xffff00, 1);
                 } else {
                     feedbackText = 'LATE';
                     feedbackColor = '#ffa500';
-                    closestMarker.setFillStyle(0xffa500, 1);
                 }
             }
+            this.tweens.add({
+                targets: closestMarker,
+                alpha: 0,
+                duration: 200,
+                ease: 'Quad.easeOut',
+            });
             this.showFeedbackText(closestMarker.x, closestMarker.y, feedbackText, feedbackColor);
-            
         } else {
             this.pressSinceLastBeat += 1;
             if (this.pressSinceLastBeat >= 3) this.triggerGameOver("OVERLOAD!");
@@ -260,29 +256,25 @@ export default class GameScene extends Phaser.Scene {
             const endPos = this.wavePath.getPoint(endT);
             let feedbackText = '';
             let feedbackColor = '#ffffff';
-            let completionColor = 0x00ff00;
 
             if (diff <= perfectTolerance) {
                 feedbackText = 'PERFECT!';
                 feedbackColor = '#00ff00';
-                completionColor = 0x00ff00;
             } else if (diff <= tolerance) {
                 if (signedDiff < 0) {
                     feedbackText = 'EARLY';
                     feedbackColor = '#ffff00';
-                    completionColor = 0xffff00;
                 } else {
                     feedbackText = 'LATE';
                     feedbackColor = '#ffa500';
-                    completionColor = 0xffa500;
                 }
             } else {
-                this.triggerGameOver("RELEASED WRONG!"); 
+                this.triggerGameOver("RELEASED TOO LATE!"); 
                 return; 
             }
 
             this.showFeedbackText(endPos.x, endPos.y, feedbackText, feedbackColor);
-            this.drawCompletedHold(note.getData('t'), endT, completionColor);
+            this.drawCompletedHold(note.getData('t'), endT);
         }
     }
 
@@ -359,9 +351,9 @@ export default class GameScene extends Phaser.Scene {
         const normalizedT = progressT / rangeT;
         return Phaser.Math.Linear(prevPoint.period, nextPoint.period, normalizedT);
     }
-    
-    drawCompletedHold(startT, endT, color = 0x00ff00) {
-        this.holdCompletedGraphics.lineStyle(20, color, 0.2);
+
+    drawCompletedHold(startT, endT) {
+        this.holdCompletedGraphics.lineStyle(20, 0x00ff00, 0.2);
         const holdPath = new Phaser.Curves.Path();
         
         const startPos = this.wavePath.getPoint(startT);
@@ -493,7 +485,7 @@ export default class GameScene extends Phaser.Scene {
             const beatT = marker.getData('t');
             
             if (this.riderProgress >= beatT + this.hitTolerance) {
-                marker.setFillStyle(0xff0000, 1); 
+                marker.setStrokeStyle(15, 0xff0000, 0.3);
                 this.triggerGameOver("MISSED!");
             }
         });
