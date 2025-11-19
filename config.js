@@ -3,7 +3,6 @@ import MenuScene from "./src/MenuScene.js";
 
 export const CONFIG = {
     type: Phaser.AUTO,
-    // backgroundColor: '#0e0e0e',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,

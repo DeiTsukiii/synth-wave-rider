@@ -23,6 +23,8 @@ export default class GameScene extends Phaser.Scene {
     gameStarted = false;
     countdownText = null;
 
+    onPhone = false;
+
     constructor() {
         super({ key: 'GameScene' });
     }
@@ -52,12 +54,21 @@ export default class GameScene extends Phaser.Scene {
         this.createBeats();
         this.createRider();
 
+        this.onPhone = (this.sys.game.device.os.android ||
+            this.sys.game.device.os.iOS ||
+            this.sys.game.device.os.iPad ||
+            this.sys.game.device.os.iPhone ||
+            !this.sys.game.device.os.desktop
+        );
+
+        if (this.onPhone) this.cameras.main.setZoom(1.5);
+
         this.input.keyboard.on('keydown', () => this.handlePress(), this);
         this.input.on('pointerdown', () => this.handlePress(), this);
         this.input.keyboard.on('keyup', () => this.handleRelease(), this);
         this.input.on('pointerup', () => this.handleRelease(), this);
 
-        const helpText = this.add.text(this.scale.width / 2, 50, 'Appuyez, Tenez, et Relâchez en rythme !', {
+        const helpText = this.add.text(this.scale.width / 2, this.onPhone ? 250 : 50, `${this.selectedLevelId}-X ${this.levelData.name}`, {
             font: '32px Inter', fill: '#ffffff'
         }).setOrigin(0.5).setScrollFactor(0);
 
@@ -178,7 +189,8 @@ export default class GameScene extends Phaser.Scene {
     }
 
     handlePress() {
-        if (this.isGameOver || !this.gameStarted) return;
+        if (this.isGameOver || !this.gameStarted || this.isPointerDown) return;
+        console.log("Press detected");
         this.isPointerDown = true;
 
         let closestMarker = null;
@@ -239,7 +251,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     handleRelease() {
-        if (this.isGameOver || !this.gameStarted) return;
+        if (this.isGameOver || !this.gameStarted || !this.isPointerDown) return;
         this.isPointerDown = false;
 
         if (this.activeHoldNote) {
