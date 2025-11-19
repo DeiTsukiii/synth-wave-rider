@@ -2,8 +2,8 @@ export const level1 = {
     name: "Synth Wave Rider",
     gameSpeed: 1/108, // 1 / nombre de seconde de l'audio
     beatMap: [      
-        { t: 3.4/108, endT: 4.8/108 }, // moment du beat en s / nombre de seconde de l'audio
-        // { t: 4.8/108 },
+        { t: 3.4/108 }, // moment du beat en s / nombre de seconde de l'audio
+        { t: 4.8/108 },
         { t: 6.2/108 },
         { t: 7.6/108 },
         { t: 9/108 },

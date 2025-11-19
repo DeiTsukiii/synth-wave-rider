@@ -87,7 +87,7 @@ export default class GameScene extends Phaser.Scene {
     createWavePath() {
         this.graphics.lineStyle(20, 0x00ffff, 0.2);
         
-        const segments = this.levelData.pathLength / 100;   
+        const segments = this.levelData.pathLength / 100;
         const startX = 100;    
         const length = this.levelData.pathLength;
         
@@ -190,7 +190,6 @@ export default class GameScene extends Phaser.Scene {
 
     handlePress() {
         if (this.isGameOver || !this.gameStarted || this.isPointerDown) return;
-        console.log("Press detected");
         this.isPointerDown = true;
 
         let closestMarker = null;
@@ -427,8 +426,6 @@ export default class GameScene extends Phaser.Scene {
         this.music = this.sound.add(`level${this.selectedLevelId}`);
         if (this.music) {
             this.music.play({ loop: false });
-        } else {
-            console.error(`Musique "level${this.selectedLevelId}" non trouvée ou chargée.`);
         }
     }
 

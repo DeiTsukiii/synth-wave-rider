@@ -25,18 +25,18 @@ export default class MenuScene extends Phaser.Scene {
             shadow: { offsetX: 0, offsetY: 0, color: '#ff00ff', blur: 30, fill: true }
         }).setOrigin(0.5);
 
-        const playButton = this.createMenuButton(centerX, centerY + 100, 'JOUER', '#00ffff', () => {
+        const playButton = this.createMenuButton(centerX, centerY + 100, 'PLAY', '#00ffff', () => {
             this.showLevelSelect();
         });
 
-        const infoText = this.add.text(centerX, this.scale.height - 50, 'Fait pour la Game Off 2025', {
+        const infoText = this.add.text(centerX, this.scale.height - 50, 'For the 2025 Game Off', {
             font: '20px Inter',
             fill: '#444444'
         }).setOrigin(0.5);
 
         this.mainMenuGroup.add([title, playButton, infoText]);
 
-        const levelTitle = this.add.text(centerX, centerY - 250, 'CHOIX DU NIVEAU', {
+        const levelTitle = this.add.text(centerX, centerY - 250, 'Levels', {
             font: '80px Inter',
             fill: '#ffffff',
             stroke: '#00ffff',
@@ -44,7 +44,7 @@ export default class MenuScene extends Phaser.Scene {
             shadow: { offsetX: 0, offsetY: 0, color: '#00ffff', blur: 20, fill: true }
         }).setOrigin(0.5);
 
-        const backButton = this.createMenuButton(centerX - 800, 100, '< RETOUR', '#ff00ff', () => {
+        const backButton = this.createMenuButton(centerX - 800, 100, '< Back', '#ff00ff', () => {
             this.showMainMenu();
         });
 
@@ -62,7 +62,7 @@ export default class MenuScene extends Phaser.Scene {
                 const y = gridStartY + row * rowHeight;
                 const levelId = levelCounter;
                 
-                const levelButton = this.createMenuButton(x, y, `NIVEAU ${levelId}`, '#ffffff', () => {
+                const levelButton = this.createMenuButton(x, y, `Level ${levelId}`, '#ffffff', () => {
                     this.selectLevel(levelId);
                 });
 
@@ -202,6 +202,28 @@ export default class MenuScene extends Phaser.Scene {
     }
 
     selectLevel(levelId) {
+        if (levelId !== 1) {
+            const button = this.levelSelectGroup.getAll().find(btn => btn.list && btn.list[1] && btn.list[1].text === `LEVEL ${levelId}`);
+            if (button) {
+                const bg = button.list[0];
+                const buttonText = button.list[1];
+                const originalColor = Phaser.Display.Color.ValueToColor('#ffffff').color;
+                const redColor = Phaser.Display.Color.ValueToColor('#ff0000').color;
+
+                bg.clear().fillStyle(redColor, 0.5).lineStyle(3, redColor, 1);
+                bg.fillRoundedRect(-140, -35, 280, 70, 15);
+                bg.strokeRoundedRect(-140, -35, 280, 70, 15);
+                buttonText.setFill('#ff0000');
+
+                this.time.delayedCall(200, () => {
+                    bg.clear().fillStyle(0x0e0e0e, 0.5).lineStyle(3, originalColor, 1);
+                    bg.fillRoundedRect(-140, -35, 280, 70, 15);
+                    bg.strokeRoundedRect(-140, -35, 280, 70, 15);
+                    buttonText.setFill('#ffffff');
+                });
+                return;
+            }
+        }
         console.log(`Lancement du niveau ${levelId}`);
         this.cameras.main.fadeOut(500, 14, 14, 14);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {

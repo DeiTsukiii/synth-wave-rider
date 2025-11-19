@@ -13,8 +13,7 @@ export const CONFIG = {
     input: {
         activePointers: 3,
     },
-    // scene: [MenuScene, GameScene],
-    scene: [GameScene],
+    scene: [MenuScene, GameScene],
     physics: {
         default: 'arcade',
         arcade: {
